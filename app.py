@@ -175,26 +175,35 @@ if st.button("🔍 Proqnoz et"):
     risk_msgs = []
     protect_msgs = []
 
-    # Bu hissə bizim qaydaların sadələşdirilmiş versiyasıdır:
-    # Qayda A: Çox zəif ballar + çox kəsilmə + çox dərs buraxma = yüksək risk
-    if (G1 < 8 and G2 < 8 and failures >= 2 and absences >= 15):
+    # --- Yüksək risk siqnalı #1: Akademik kritik durum
+    # Bal çox aşağıdır və artıq bir neçə dəfə kəsilib.
+    # Bu halda artıq dərs buraxmasının çox olması şərt deyil.
+    if (G1 < 8 and G2 < 8 and failures >= 2):
         risk_msgs.append(
-            "Şagirdin G1 və G2 balları aşağıdır, çoxsaylı kəsilmə var və dərs buraxmaları çoxdur. "
-            "Bu profil yüksək risk daşıyır (imtahandan keçməmə ehtimalı yüksəkdir)."
+            "Şagirdin G1 və G2 balları çox aşağıdır və artıq dəfələrlə kəsilib. "
+            "Bu akademik baxımdan YÜKSƏK RİSK hesab olunur."
         )
 
-    # Qayda B: Yüksək bal + kəsilmə yoxdur + ciddi oxuma = təhlükə azdır
+    # --- Yüksək risk siqnalı #2: Davamiyyət / nizam-intizam riski
+    # Burada baldan əlavə, əsasən çox buraxma + çox kəsilmə bizi narahat edir.
+    if (failures >= 2 and absences >= 15):
+        risk_msgs.append(
+            "Şagird çox dərs buraxıb və dəfələrlə kəsilib. "
+            "Bu davranış baxımından YÜKSƏK RİSK siqnalıdır."
+        )
+
+    # --- Aşağı risk siqnalı: sabit yüksək nəticə
     if (G1 >= 15 and G2 >= 15 and failures == 0 and studytime >= 3):
         protect_msgs.append(
-            "Şagirdin balları yüksəkdir, kəsilməsi yoxdur və kifayət qədər oxuyur. "
-            "Keçmə ehtimalı çox yüksəkdir."
+            "Şagirdin balları yüksəkdir, kəsilmə yoxdur və kifayət qədər oxuyur. "
+            "Keçmə ehtimalı ÇOX YÜKSƏKDIR."
         )
 
-    # Heç biri yoxdursa - orta zona
+    # --- Yekun şərh:
     if len(risk_msgs) == 0 and len(protect_msgs) == 0:
         st.info(
-            "Bu şagird nə tam təhlükəli zona, nə də tam təhlükəsiz zonadadır. "
-            "Şagirdin vəziyyətini diqqətlə izləmək məsləhətdir."
+            "Bu şagird nə tam təhlükəli zonadadır, nə də tam rahat zonadadır. "
+            "Daimi nəzarət və əlavə dəstək məsləhətdir."
         )
     else:
         for msg in risk_msgs:
@@ -203,9 +212,10 @@ if st.button("🔍 Proqnoz et"):
             st.success(msg)
 
     st.caption("""
-Bu izah LTN modelində istifadə etdiyimiz pedaqoji qaydaların sadələşdirilmiş formasıdır.
-Real model bu qaydaları itirmədən neyron şəbəkə ilə birləşdirir.
+Bu şərhlər LTN modelində istifadə olunan pedaqoji qaydaların sadələşdirilmiş formasıdır.
+Burada məqsəd şagirdi stiqmatizasiya etmək deyil, onu vaxtında dəstək qrupuna yönləndirməkdir.
 """)
+
 
 
 # -------------------------------------------------

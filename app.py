@@ -123,26 +123,36 @@ def plot_performance_bars(std_results, ltn_results):
 
 def plot_rule_penalty(std_results, ltn_results):
     """
-    Rule Penalty = Qayda Pozuntusu.
-    Aşağı olduqca yaxşıdır (müəllimin qoyduğu məntiqi qaydalar daha çox qorunur).
+    Qayda pozuntusu (Rule Penalty) müqayisəsi.
+    Daha aşağı dəyər = model pedaqoji qaydalara daha yaxşı uyğunlaşır.
     """
     labels = [std_results["label"], ltn_results["label"]]
     vals = [std_results["rule_penalty"], ltn_results["rule_penalty"]]
 
-    fig, ax = plt.subplots(figsize=(4,3))
-    ax.bar(labels, vals)
+    fig, ax = plt.subplots(figsize=(5,3.5))
+    bars = ax.bar(labels, vals, color=['#6baed6', '#3182bd'])
     ax.set_ylabel('Qayda Pozuntusu (aşağı = daha yaxşı)')
     ax.set_title('Məntiq Qaydalarına Uyğunluq')
 
-    for i,v in enumerate(vals):
-        offset = v * 0.2 if v > 0 else 0.00005
+    # X oxundakı yazılar bucaqlı və aralı olsun
+    ax.set_xticks(np.arange(len(labels)))
+    ax.set_xticklabels(labels, rotation=15, ha='right', fontsize=9)
+
+    # Hər barın üzərinə dəyəri yaz
+    for i, bar in enumerate(bars):
+        height = bar.get_height()
         ax.text(
-            i, v + offset,
-            f"{v:.6f}",
-            ha='center', fontsize=9
+            bar.get_x() + bar.get_width()/2,
+            height + height*0.2,
+            f"{vals[i]:.6f}",
+            ha='center', va='bottom', fontsize=9, fontweight='bold'
         )
+
+    # Layout düzəlişləri (aşağıdan boşluq artırır)
+    plt.subplots_adjust(bottom=0.25)
     fig.tight_layout()
     return fig
+
 
 # -------------------------------------------------
 # 1. Şagird üçün fərdi proqnoz bloku (İndi ən birinci gəlir)
